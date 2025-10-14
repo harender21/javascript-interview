@@ -1,27 +1,20 @@
-function throttle(func, limit) {
-    let lastFunc;
-    let lastRan;
-
-    return function() {
-        const context = this;
-        const args = arguments;
-        if(!lastRan) {
-            func.apply(this, args);
-            lastRan = Date.now();
-        } else {
-            clearTimeout(lastFunc);
-            lastFunc = setTimeout(function() {
-                if((Date.now() - lastRan) >= limit) { // if the time passed since lastRan >= limit then executes this function again.
-                    func.apply(context, args);
-                    lastRan = Date.now();
-                }
-            }, limit - (Date.now() - lastRan)); // if a scoll at this moment, it will check how much time is left sice the last execution of funciton and the limit
-        }
+function throttle(func, wait) {
+  let shouldTrottled = false;
+  return function(...args) {
+    if(shouldTrottled) {
+      return;
     }
 
+    shouldTrottled = true;
+  
+    setTimeout(() => {
+      shouldTrottled = false;
+    }, wait);
+
+    func.apply(this, args);
+
+  };
 }
-
-
 
 // Dom element to display mouse coordinates
 const output = document.getElementById('output');
