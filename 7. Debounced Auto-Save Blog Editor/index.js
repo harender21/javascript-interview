@@ -4,30 +4,32 @@ const saveCountDisp = document.querySelector('#save-count');
 let count = 0;
 
 function debounce(func, wait, options = { leading: true, trailing: true }) {
-    let timeout;
-    let lastArgs;
+    let timeout = null;
+    let lastArgs = null;
+    let lastContext = null;
 
     return function (...args) {
-        const context = this;
-        const isInvoked = options.leading && !timeout;
-
-        // Capture arguments for the trailing edge
         lastArgs = args;
+        lastContext = this;
 
-        clearTimeout(timeout);
+        const shouldCallNow = options.leading && !timeout;
+
+        if (timeout) {
+            clearTimeout(timeout);
+        }
 
         timeout = setTimeout(() => {
             timeout = null;
-            // If trailing is true and we didn't just fire on the leading edge
+
             if (options.trailing && lastArgs) {
-                func.apply(context, lastArgs);
+                func.apply(lastContext, lastArgs);
                 lastArgs = null;
             }
         }, wait);
 
-        if (isInvoked) {
-            func.apply(context, args);
-            lastArgs = null; // Clear to prevent double-firing if only one click occurred
+        if (shouldCallNow) {
+            func.apply(lastContext, lastArgs);
+            lastArgs = null;
         }
     };
 }
