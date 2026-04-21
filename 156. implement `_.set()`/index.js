@@ -58,6 +58,8 @@ const obj = {
     }
 };
 
+//Execute these cases one at a time by commenting all others.
+
 set(obj, 'a.b.c', 'BFE');
 console.log(obj.a.b.c); // "BFE"
 
